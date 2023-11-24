@@ -17,6 +17,7 @@
 </div>
 
 @section Scripts{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
         var endPoint = "https://mist153s12.cognitiveservices.azure.com"
 
@@ -54,10 +55,24 @@
             data: JSON.stringify(data),
         })
             .done(function (data) {
-                alert(JSON.stringify(data));
+                // alert(JSON.stringify(data));
+                var text = data['description']['captions'][0]['text'];
+                var confidence = data['description']['captions'][0]['confidence'];
+                // alert(`內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`);
+                    Swal.fire({
+                        title: "讀取結果",
+                        text: `內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`,
+                        icon: "success"
+                    });
+
             })
             .fail(function (err) {
-                alert(err.statusText);
+                // alert(err.statusText);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: `Something ${err.statusText} went wrong!`,
+                    });
             });
     };
 </script>

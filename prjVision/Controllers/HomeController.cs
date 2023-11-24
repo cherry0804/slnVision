@@ -23,6 +23,11 @@ namespace prjVision.Controllers
             return View();
         }
 
+        public IActionResult VisionByte()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

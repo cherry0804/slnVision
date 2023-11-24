@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "VisionByte";
+}
+
+<h1>VisionByte</h1>
+
+<div class="form-group">
+
+    <label class="form-label">檔案：</label>
+    <input id="imgFile" type="file" class="form-control" accept="image/*" />
+    <button class="btn btn-success" onclick="analyzeImage()">分析</button>
+
+</div>
+<div class="form-group">
+    <img id="imgPreview" src="~/images/no_image.jpg" />
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        var endPoint = "https://mist153s12.cognitiveservices.azure.com"
+
+        $("#imgFile").bind("change", () => {
+            var file = this.files[0]
+            var allowType = "image.*";
+            if (file.type.match(allowType)) {
+                //預覽
+            }
+            else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "不支援的檔案類型",
+                });
+            }
+        });
+
+
+
+
+
+        function analyzeImage() {
+
+            // console.log("!!!");
+
+            var imgUrl = $("#imgUrl").val();
+            $("#imgPreview").attr("src", imgUrl);
+            var data = {
+                url: imgUrl
+            };
+
+            var params = {
+                // Request parameters
+                "visualFeatures": "Description,Tags",
+                // "details": "{string}",
+                "language": "zh",
+                "model-version": "latest",
+            };
+
+
+
+            $.ajax({
+                url: `${endPoint}/vision/v3.2/analyze?${$.param(params)}`,
+                beforeSend: function (xhrObj) {
+                    // Request headers
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "4524cba53d134c5998d2623635cd5eb0");
+                },
+                type: "POST",
+                // Request body
+                data: JSON.stringify(data),
+            })
+                .done(function (data) {
+                    // alert(JSON.stringify(data));
+                    var text = data['description']['captions'][0]['text'];
+                    var confidence = data['description']['captions'][0]['confidence'];
+                    // alert(`內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`);
+                    Swal.fire({
+                        title: "讀取結果",
+                        text: `內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`,
+                        icon: "success"
+                    });
+
+                })
+                .fail(function (err) {
+                    // alert(err.statusText);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: `Something ${err.statusText} went wrong!`,
+                    });
+                });
+        };
+    </script>
+}
