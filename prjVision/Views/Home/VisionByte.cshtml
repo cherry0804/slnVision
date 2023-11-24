@@ -19,12 +19,24 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         var endPoint = "https://mist153s12.cognitiveservices.azure.com"
+        var arrayBuffer;
 
-        $("#imgFile").bind("change", () => {
+        $("#imgFile").bind("change", function () {
             var file = this.files[0]
             var allowType = "image.*";
             if (file.type.match(allowType)) {
                 //預覽
+                var reader = new FileReader();
+                reader.onload = function () {
+                    arrayBuffer = this.result;
+                    var blob = new Blob([arrayBuffer], {
+                        type: "image/jpeg"
+                    });
+                    var urlCreator = window.URL || window.webkitURL;
+                    var imageUrl = urlCreator.createObjectURL(blob);
+                    $("#imgPreview").attr("src", imageUrl);
+                };
+                reader.readAsArrayBuffer(this.files[0]);
             }
             else {
                 Swal.fire({
@@ -36,18 +48,7 @@
         });
 
 
-
-
-
         function analyzeImage() {
-
-            // console.log("!!!");
-
-            var imgUrl = $("#imgUrl").val();
-            $("#imgPreview").attr("src", imgUrl);
-            var data = {
-                url: imgUrl
-            };
 
             var params = {
                 // Request parameters
@@ -63,12 +64,13 @@
                 url: `${endPoint}/vision/v3.2/analyze?${$.param(params)}`,
                 beforeSend: function (xhrObj) {
                     // Request headers
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Content-Type", "application/octet-stream");
                     xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "4524cba53d134c5998d2623635cd5eb0");
                 },
                 type: "POST",
                 // Request body
-                data: JSON.stringify(data),
+                data: arrayBuffer,
+                processData:false,
             })
                 .done(function (data) {
                     // alert(JSON.stringify(data));
