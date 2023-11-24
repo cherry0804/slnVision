@@ -6,44 +6,59 @@
 <h1>VisionURL</h1>
 
 <div class="form-group">
-<form>
+
     <label class="form-label">網址：</label>
     <input id="imgUrl" type="text" class="form-control" />
-        <button class="btn btn-success" onclick="analyzeImage">分析</button>
-</form>
+    <button class="btn btn-success" onclick="analyzeImage()">分析</button>
+
 </div>
 <div class="form-group">
-    <img id="imgPreview" src="" />
+    <img id="imgPreview" src="~/images/no_image.jpg" />
 </div>
 
 @section Scripts{
 <script type="text/javascript">
-    $(function analyzeImage() {
+        var endPoint = "https://mist153s12.cognitiveservices.azure.com"
+
+    
+
+    function analyzeImage() {
+
+            // console.log("!!!");
+
+        var imgUrl = $("#imgUrl").val();
+        $("#imgPreview").attr("src", imgUrl);
+        var data = {
+            url: imgUrl
+        };
+
         var params = {
             // Request parameters
-            "visualFeatures": "Categories",
-            "details": "{string}",
+            "visualFeatures": "Discription,Tags",
+            // "details": "{string}",
             "language": "en",
             "model-version": "latest",
         };
 
+            
+
         $.ajax({
-            url: "https://westus.api.cognitive.microsoft.com/vision/v3.2/analyze?" + $.param(params),
+            url: `${endPoint}/vision/v3.2/analyze?${$.param(params)}`,
             beforeSend: function (xhrObj) {
                 // Request headers
                 xhrObj.setRequestHeader("Content-Type", "application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "{subscription key}");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "4524cba53d134c5998d2623635cd5eb0");
             },
             type: "POST",
             // Request body
-            data: "{body}",
+            data: JSON.stringify(data),
         })
             .done(function (data) {
-                alert("success");
+                alert(JSON.stringify(data));
             })
-            .fail(function () {
-                alert("error");
+            .fail(function (err) {
+                alert(err.statusText);
             });
-    });
+    };
 </script>
 }
