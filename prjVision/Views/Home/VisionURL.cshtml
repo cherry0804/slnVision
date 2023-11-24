@@ -5,3 +5,45 @@
 
 <h1>VisionURL</h1>
 
+<div class="form-group">
+<form>
+    <label class="form-label">網址：</label>
+    <input id="imgUrl" type="text" class="form-control" />
+        <button class="btn btn-success" onclick="analyzeImage">分析</button>
+</form>
+</div>
+<div class="form-group">
+    <img id="imgPreview" src="" />
+</div>
+
+@section Scripts{
+<script type="text/javascript">
+    $(function analyzeImage() {
+        var params = {
+            // Request parameters
+            "visualFeatures": "Categories",
+            "details": "{string}",
+            "language": "en",
+            "model-version": "latest",
+        };
+
+        $.ajax({
+            url: "https://westus.api.cognitive.microsoft.com/vision/v3.2/analyze?" + $.param(params),
+            beforeSend: function (xhrObj) {
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type", "application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "{subscription key}");
+            },
+            type: "POST",
+            // Request body
+            data: "{body}",
+        })
+            .done(function (data) {
+                alert("success");
+            })
+            .fail(function () {
+                alert("error");
+            });
+    });
+</script>
+}
