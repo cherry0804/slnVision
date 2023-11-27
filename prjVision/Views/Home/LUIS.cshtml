@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "LUIS";
+}
+
+<h1>LUIS</h1>
+
+<div class="form-group">
+
+    <label class="form-label">資料：</label>
+    <input id="txtID" type="text" class="form-control" />
+    <button class="btn btn-success" onclick="analyzeImage()">分析</button>
+
+</div>
+<div class="form-group">
+    <img id="imgPreview" src="~/images/no_image.jpg" />
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        var endPoint = "https://medsys-153language.cognitiveservices.azure.com/language/:analyze-conversations?api-version=2022-10-01-preview"
+
+        function analyzeImage() {
+
+            var data = {
+                "kind": "Conversation",
+                "analysisInput": {
+                    "conversationItem": {
+                        "id": "1",
+                        "text": $("#txtID").val(),
+                        "modality": "text",
+                        "language": "zh-hant",
+                        "participantId": "1"
+                    }
+                },
+                "parameters": {
+                    "projectName": "meal",
+                    "verbose": true,
+                    "deploymentName": "Medsys153Meal",
+                    "stringIndexType": "TextElement_V8"
+                }
+            };
+
+
+            $.ajax({
+                url: endPoint,
+                beforeSend: function (xhrObj) {
+                    // Request headers
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "634227015be945188bf8fdd8021fdf94");
+                },
+                type: "POST",
+                // Request body
+                data: JSON.stringify(data),
+            })
+                .done(function (data) {
+                    // alert(JSON.stringify(data));
+                    var text = data.result.prediction.intents[0].category;
+                    var confidence = data.result.prediction.intents[0].confidenceScore;
+                    // alert(`內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`);
+                    Swal.fire({
+                        title: "讀取結果",
+                        text: `內容：${text}，信心指數：${(confidence * 100).toFixed(2)}%`,
+                        icon: "success"
+                    });
+
+                })
+                .fail(function (err) {
+                    // alert(err.statusText);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: `Something ${err.statusText} went wrong!`,
+                    });
+                });
+        };
+    </script>
+}

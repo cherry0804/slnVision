@@ -28,6 +28,16 @@ namespace prjVision.Controllers
             return View();
         }
 
+        public IActionResult VisionCustom()
+        {
+            return View();
+        }
+
+        public IActionResult LUIS()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
