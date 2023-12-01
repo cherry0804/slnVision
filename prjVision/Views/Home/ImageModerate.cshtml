@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "ImageModerate";
+}
+
+<h1>ImageModerate</h1>
+
+<div class="form-group">
+
+    <label class="form-label">網址：</label>
+    <input id="imgUrl" type="text" class="form-control" />
+    <button class="btn btn-success" onclick="analyzeImage()">審核</button>
+
+</div>
+<div class="form-group">
+    <img id="imgPreview" src="~/images/no_image.jpg" />
+</div>
+
+@section Scripts
+{
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+
+        function analyzeImage() {
+            var params = {
+                // Request parameters
+                "CacheImage": "false",
+            };
+
+
+            var imgUrl = $("#imgUrl").val();
+            $("#imgPreview").attr("src", imgUrl);
+            var data = {
+                "DataRepresentation": "URL",
+                "Value": imgUrl
+            };
+
+            $.ajax({
+                url: "https://medsyscontentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessImage/Evaluate?" + $.param(params),
+                beforeSend: function (xhrObj) {
+                    // Request headers
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "80f2abb52edd48e086740d2fd9a858a1");
+                },
+                type: "POST",
+                // Request body
+                data: JSON.stringify(data),
+            })
+                .done(function (data) {
+                    Swal.fire({
+                        title: "輸出結果!",
+                        text: JSON.stringify(data),
+                        icon: "success"
+                    });
+                })
+                .fail(function (err) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: `Something ${err.statusText} went wrong!`
+                    });
+                });
+
+        };
+    </script>
+}

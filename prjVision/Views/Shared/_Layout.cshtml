@@ -32,8 +32,16 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="VisionCustom">視覺啥的(自訂)</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LUIS">LUIS</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="LUIS">語言理解</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ImageModerate">圖片仲裁</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TextModerate">文字仲裁</a>
+                        </li>
+                        <li class="nav-item">
+                            <img src="images/bot.png" title="網站客服" width="30" height="30" onclick="window.open('@Url.Content("~/WebBot.html")','網站客服','width=450,height=550');" />
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>

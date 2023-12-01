@@ -1,0 +1,70 @@
+﻿
+@{
+    ViewData["Title"] = "TextModerate";
+}
+
+<h1>TextModerate</h1>
+
+<div class="container">
+    <div class="form-group">
+        <label class="form-label">文字輸入</label>
+        <input class="form-control" id="textcontent" value="fuck" />
+    </div>
+
+    <div class="form-group">
+        <button class="btn btn-danger " onclick="textModerator()">審核</button>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script type="text/javascript">
+        function textModerator() {
+            var therohold = 0.5;
+
+            var params = {
+
+
+                // Request parameters
+                "autocorrect": "true",
+                "PII": "true",
+                //"listId": "{string}",
+                "classify": "True",
+                "language": "eng",
+            };
+            //var data = {
+            //    "DataRepresentation": "URL",
+            //    "Value": $("#textcontent").val()
+            //};
+            $.ajax({
+                url: `https://medsyscontentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen? ${$.param(params)}`,
+                beforeSend: function (xhrObj) {
+                    // Request headers
+                    xhrObj.setRequestHeader("Content-Type", "text/plain");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "80f2abb52edd48e086740d2fd9a858a1");
+                },
+                type: "POST",
+                // Request body
+                data: $("#textcontent").val(),
+            })
+                .done(function (data) {
+
+                    alert(JSON.stringify(data));
+                    var Category1 = data['Classification']['Category1']['Score'];
+                    var Category2 = data['Classification']['Category2']['Score'];
+                    var Category3 = data['Classification']['Category3']['Score'];
+                    if (Category1 >= therohold) { alert("成人") };
+                    if (Category2 >= therohold) { alert("性騷擾") };
+                    if (Category3 >= therohold) { alert("攻擊性") };
+
+                })
+                .fail(function (err) {
+                    alert(err.statustext);
+
+                });
+        }
+    </script>
+
+}

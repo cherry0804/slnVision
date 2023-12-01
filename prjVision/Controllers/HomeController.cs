@@ -38,6 +38,16 @@ namespace prjVision.Controllers
             return View();
         }
 
+        public IActionResult ImageModerate()
+        {
+            return View();
+        }
+
+        public IActionResult TextModerate()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
