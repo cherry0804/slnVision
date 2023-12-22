@@ -39,11 +39,11 @@
             //    "Value": $("#textcontent").val()
             //};
             $.ajax({
-                url: `https://medsyscontentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen? ${$.param(params)}`,
+                url: `https://gohealthtext.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen? ${$.param(params)}`,
                 beforeSend: function (xhrObj) {
                     // Request headers
                     xhrObj.setRequestHeader("Content-Type", "text/plain");
-                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "80f2abb52edd48e086740d2fd9a858a1");
+                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "bbd6b3f1411a493ab9d33ffbf342fdd2");
                 },
                 type: "POST",
                 // Request body
